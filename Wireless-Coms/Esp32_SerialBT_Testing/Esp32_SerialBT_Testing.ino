@@ -31,61 +31,26 @@ if (success) {
 void loop() {
   // Receive from PC
   if (SerialBT.available()) {
-    char state = SerialBT.read();
+    String state = SerialBT.readStringUntil('\n');
     Serial.print("Received: ");
     Serial.println(state);
-    switch(state){
-      case '1':
-        digitalWrite(LED0,HIGH);
-        digitalWrite(LED1,LOW);
-        digitalWrite(LED2,LOW);
-        digitalWrite(LED3,LOW);
-        digitalWrite(LED4,LOW);
-        break;
-      case '2':
-        digitalWrite(LED0,LOW);
-        digitalWrite(LED1,HIGH);
-        digitalWrite(LED2,LOW);
-        digitalWrite(LED3,LOW);
-        digitalWrite(LED4,LOW);
-        break;
-      case '3':
-        digitalWrite(LED0,LOW);
-        digitalWrite(LED1,LOW);
-        digitalWrite(LED2,HIGH);
-        digitalWrite(LED3,LOW);
-        digitalWrite(LED4,LOW);
-        break;
-      case '4':
-        digitalWrite(LED0,LOW);
-        digitalWrite(LED1,LOW);
-        digitalWrite(LED2,LOW);
-        digitalWrite(LED3,HIGH);
-        digitalWrite(LED4,LOW);
-        break;
-      case '5': 
-        digitalWrite(LED0,LOW);
-        digitalWrite(LED1,LOW);
-        digitalWrite(LED2,LOW);
-        digitalWrite(LED3,LOW);
-        digitalWrite(LED4,HIGH);
-        break;
-      case '6':
-        digitalWrite(LED0,HIGH);
-        digitalWrite(LED1,HIGH);
-        digitalWrite(LED2,HIGH);
-        digitalWrite(LED3,HIGH);
-        digitalWrite(LED4,HIGH);
-        break;
-      default:
-        digitalWrite(LED0,LOW);
-        digitalWrite(LED1,LOW);
-        digitalWrite(LED2,LOW);
-        digitalWrite(LED3,LOW);
-        digitalWrite(LED4,LOW);
-        break;
+    if(state.length() > 0){
+      int thumb = state[0] - 0;
+      int pointer = state[1] - 0;
+      int middle = state[2] - 0;
+      int ring = state[3] - 0;
+      int pinky = state[4] - 0;
+      if(thumb == 1){ digitalWrite(LED0, HIGH); }
+      else{ digitalWrite(LED0, LOW); }
+      if(pointer == 1){ digitalWrite(LED1, HIGH); }
+      else{ digitalWrite(LED1, LOW); }
+      if(middle == 1){ digitalWrite(LED2, HIGH); }
+      else{ digitalWrite(LED2, LOW); }
+      if(ring == 1){ digitalWrite(LED3, HIGH); }
+      else{ digitalWrite(LED3, LOW); }
+      if(pinky == 1){ digitalWrite(LED4, HIGH); }
+      else{ digitalWrite(LED4, LOW); }
     }
-
   }
 
   // Send a periodic message to PC every 2s

@@ -8,13 +8,18 @@ BluetoothSerial SerialBT;
 #define LED2 25
 #define LED3 33
 #define LED4 32 
+#define Kill_Switch 13
+
+//Hardware Level Interrupt Handler
+void IRAM_ATTR killSwitchInter();
 
 unsigned long lastSend = 0;
+bool killState = false;
 
 void setup() {
   Serial.begin(115200);               // USB debug
   delay(2000);
-  bool success = SerialBT.begin("BT_LED_Controller"); // true = master mode
+  bool success = SerialBT.begin("BT_LED_Controller_SD"); // true = master mode
 if (success) {
   Serial.println("Bluetooth device started. Pair and open the COM port.");
 } else {
@@ -26,14 +31,25 @@ if (success) {
   pinMode(LED3, OUTPUT);
   pinMode(LED4, OUTPUT);
   Serial.println("Bluetooth device started. Pair and open the COM port.");
+
+  //HW Interrupt Setup
+  pinMode(Kill_Switch, INPUT);
+  attachInterrupt(digitalPinToInterrupt(Kill_Switch), killSwitchInter, FALLING);
 }
 
 void loop() {
+  if(killState == true){
+    digitalWrite(LED0, LOW);
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED2, LOW);
+    digitalWrite(LED3, LOW);
+    digitalWrite(LED4, LOW);
+    while(1){ delay(1000); }
+  }
+
   // Receive from PC
   if (SerialBT.available()) {
     String state = SerialBT.readStringUntil('\n');
-    Serial.print("Received: ");
-    Serial.println(state);
     if(state.length() > 0){
       int thumb = state[0] - 0;
       int pointer = state[1] - 0;
@@ -58,4 +74,9 @@ void loop() {
     SerialBT.println("Hello from ESP32");
     lastSend = millis();
   }
+}
+
+
+void IRAM_ATTR killSwitchInter(){
+  killState = true;
 }

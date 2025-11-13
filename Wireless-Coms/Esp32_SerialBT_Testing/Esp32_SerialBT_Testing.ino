@@ -20,11 +20,11 @@ void setup() {
   Serial.begin(115200);               // USB debug
   delay(2000);
   bool success = SerialBT.begin("BT_LED_Controller_SD"); // true = master mode
-if (success) {
-  Serial.println("Bluetooth device started. Pair and open the COM port.");
-} else {
-  Serial.println("Bluetooth failed to start!");
-}
+  if (success) {
+    Serial.println("Bluetooth device started. Pair and open the COM port.");
+  } else {
+    Serial.println("Bluetooth failed to start!");
+  }
   pinMode(LED0, OUTPUT);
   pinMode(LED1, OUTPUT);
   pinMode(LED2, OUTPUT);
@@ -34,7 +34,7 @@ if (success) {
 
   //HW Interrupt Setup
   pinMode(Kill_Switch, INPUT);
-  attachInterrupt(digitalPinToInterrupt(Kill_Switch), killSwitchInter, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Kill_Switch), killSwitchInter, HIGH);
 }
 
 void loop() {

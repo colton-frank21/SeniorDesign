@@ -8,6 +8,7 @@ BluetoothSerial SerialBT;
 #define LED3 33
 #define LED4 32
 #define Kill_Switch 13
+#define PWM 14
 
 //Hardware Level Interrupt Handler
 void IRAM_ATTR killSwitchInter();
@@ -17,7 +18,7 @@ bool killState = false;
 
 void setup() {
   Serial.begin(115200); // USB debug
-  delay(2000);
+  delay(2500);
   bool success = SerialBT.begin("BT_LED_Controller_SD"); // true = master mode
   if (success) {
     Serial.println("Bluetooth device started. Pair and open the COM port.");
@@ -34,6 +35,10 @@ void setup() {
   //HW Interrupt Setup
   pinMode(Kill_Switch, INPUT);
   attachInterrupt(digitalPinToInterrupt(Kill_Switch), killSwitchInter, HIGH);
+
+  //PWM Setup
+  ledcAttach(PWM, 1000, 8);
+  ledcWrite(PWM, 153);
 }
 
 void loop() {
